@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta a Luis Bukele (IA) - Interfaz Mejorada</title>
+    <style>
+        /* Reset básico y tipografía base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f6; /* Un fondo más suave y moderno */
+            color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centramos el contenido principal */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px; /* Un ancho máximo para mejor lectura en pantallas grandes */
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
+        }
+
+        h1 {
+            color: #1A237E; /* Un azul más profundo y serio para el liderazgo */
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+        
+        h2 {
+            color: #283593; /* Un tono secundario para subtítulos */
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #C5CAE9; /* Línea divisoria sutil */
+            padding-bottom: 5px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #3F51B5; /* Color del label en línea con la paleta */
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #BDBDBD; /* Borde más definido */
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical; /* Permitir redimensionar verticalmente */
+        }
+
+        textarea:focus {
+            border-color: #3F51B5; /* Resaltar al enfocar */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+        }
+
+        button {
+            display: block; /* Hacerlo bloque para que ocupe el ancho necesario o se pueda centrar */
+            width: 100%; /* O un ancho específico si se prefiere */
+            padding: 12px 20px;
+            background-color: #1A237E; /* Color primario del botón, igual que el título */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease; /* Transición suave */
+        }
+
+        button:hover {
+            background-color: #283593; /* Un azul ligeramente más claro al pasar el ratón */
+        }
+        
+        button:disabled {
+            background-color: #9E9E9E; /* Color para estado deshabilitado */
+            cursor: not-allowed;
+        }
+
+        #respuestaLuisBukele {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #E8EAF6; /* Fondo suave para la respuesta */
+            border-left: 5px solid #3F51B5; /* Borde distintivo */
+            border-radius: 0 6px 6px 0;
+            min-height: 50px; /* Para que tenga algo de altura incluso si está vacío */
+            white-space: pre-wrap; /* Para respetar saltos de línea en la respuesta */
+        }
+
+        .advertencia {
+            color: #D32F2F; /* Rojo para advertencias importantes */
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #FFCDD2; /* Fondo rojo claro */
+            border: 1px solid #D32F2F;
+            border-radius: 4px;
+            text-align: center;
+        }
+         #estadoAPI {
+            font-style: italic;
+            color: #388E3C; /* Verde para estado OK */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        // --- ¡ADVERTENCIA DE LUIS BUKELE! ---
+        // La siguiente línea es SOLO PARA PRUEBAS LOCALES Y DEMOSTRACIÓN.
+        // ¡NO SUBA ESTO A UN SERVIDOR PÚBLICO CON SU API KEY REAL!
+        // SU API KEY QUEDARÍA EXPUESTA. MANÉJELA A TRAVÉS DE UN BACKEND EN PRODUCCIÓN.
+        const API_KEY = "AIzaSyC6LaXhR1JvHyobe1U0UQyDoQcSd3w7la8"; 
+        // --- FIN DE LA ADVERTENCIA ---
+
+        let genAI;
+        let model;
+
+        // Ejecutar cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (!API_KEY || API_KEY === "SU_API_KEY_AQUI") {
+                    document.getElementById("respuestaLuisBukele").innerText = "¡ERROR CRÍTICO! Debe configurar su API_KEY en el código JavaScript. Lea la advertencia.";
+                    // Deshabilitar el botón si no hay API key
+                    const botonEnviar = document.getElementById("botonEnviar");
+                    if(botonEnviar) botonEnviar.disabled = true;
+                    throw new Error("API Key no configurada.");
+                }
+                genAI = new GoogleGenerativeAI(API_KEY);
+                model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                document.getElementById("estadoAPI").innerText = "Primer presidente IA creado por LUIS";
+            } catch (error) {
+                console.error("Error inicializando la IA:", error);
+                const respuestaDiv = document.getElementById("respuestaLuisBukele");
+                if (respuestaDiv && !respuestaDiv.innerText.startsWith("¡ERROR CRÍTICO!")) { 
+                     respuestaDiv.innerText = "Error al inicializar el motor de IA. Revise la consola y su API Key.";
+                }
+                const botonEnviar = document.getElementById("botonEnviar");
+                if(botonEnviar) botonEnviar.disabled = true;
+            }
+        });
+
+        async function enviarConsulta() {
+            if (!model) {
+                document.getElementById("respuestaLuisBukele").innerText = "El modelo de IA no está disponible. Verifique la configuración de la API Key.";
+                return;
+            }
+
+            const pregunta = document.getElementById("preguntaUsuario").value;
+            if (!pregunta.trim()) {
+                document.getElementById("respuestaLuisBukele").innerText = "¡Debe escribir una pregunta! La acción requiere sustancia, no vacío.";
+                return;
+            }
+
+            document.getElementById("respuestaLuisBukele").innerText = "Procesando su consulta con la determinación de siempre...";
+            document.getElementById("botonEnviar").disabled = true;
+
+            try {
+                const result = await model.generateContent(pregunta);
+                const response = result.response;
+                const text = response.text();
+                document.getElementById("respuestaLuisBukele").innerText = text;
+            } catch (error) {
+                console.error("Error al generar contenido:", error);
+                document.getElementById("respuestaLuisBukele").innerText = "Hubo un problema al obtener la respuesta. Verifique la consola del navegador. Podría ser un problema con la API Key o la solicitud.";
+            } finally {
+                document.getElementById("botonEnviar").disabled = false;
+            }
+        }
+        window.enviarConsulta = enviarConsulta; // Hacemos la función accesible globalmente para el botón onclick
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta a Luis Bukele (IA)</h1>
+        
+        <p id="estadoAPI">Inicializando motor de IA...</p>
+
+        <label for="preguntaUsuario">Pregunta al presidente:</label>
+        <textarea id="preguntaUsuario" rows="6" placeholder="Escriba aquí su consulta... "></textarea>
+        
+        <button id="botonEnviar" onclick="enviarConsulta()">Enviar Consulta con Firmeza</button>
+
+        <h2>Respuesta Contundente:</h2>
+        <div id="respuestaLuisBukele">
+            Solo soluciones claras y directas.
+        </div>
+    </div>
+</body>
+</html>
