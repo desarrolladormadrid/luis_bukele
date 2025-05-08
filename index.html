@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta a Luis Bukele (IA) - Interfaz Mejorada</title>
+    <title>Consulta a Nayib Bukele (IA para España) - Historial Visible</title>
     <style>
+        /* ... (Estilos CSS anteriores sin cambios significativos, pero asegúrate de tener los estilos para .chat-log-container, .chat-message, etc., que ya estaban en el bloque de CSS anterior) ... */
         /* Reset básico y tipografía base */
         * {
             box-sizing: border-box;
@@ -15,35 +16,35 @@
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            background-color: #f4f7f6; /* Un fondo más suave y moderno */
+            background-color: #f4f7f6;
             color: #333;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centramos el contenido principal */
+            align-items: center;
         }
 
         .container {
             width: 100%;
-            max-width: 700px; /* Un ancho máximo para mejor lectura en pantallas grandes */
+            max-width: 700px;
             background-color: #ffffff;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #1A237E; /* Un azul más profundo y serio para el liderazgo */
+            color: #1A237E;
             text-align: center;
             margin-bottom: 25px;
-            font-size: 2em;
+            font-size: 1.8em;
         }
         
         h2 {
-            color: #283593; /* Un tono secundario para subtítulos */
+            color: #283593;
             margin-top: 30px;
             margin-bottom: 15px;
-            border-bottom: 2px solid #C5CAE9; /* Línea divisoria sutil */
+            border-bottom: 2px solid #C5CAE9;
             padding-bottom: 5px;
         }
 
@@ -51,72 +52,107 @@
             display: block;
             font-weight: bold;
             margin-bottom: 8px;
-            color: #3F51B5; /* Color del label en línea con la paleta */
+            color: #3F51B5;
         }
 
         textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #BDBDBD; /* Borde más definido */
+            border: 1px solid #BDBDBD;
             border-radius: 6px;
             font-family: inherit;
             font-size: 1rem;
-            resize: vertical; /* Permitir redimensionar verticalmente */
+            resize: vertical;
         }
 
         textarea:focus {
-            border-color: #3F51B5; /* Resaltar al enfocar */
+            border-color: #3F51B5;
             outline: none;
             box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
         }
 
         button {
-            display: block; /* Hacerlo bloque para que ocupe el ancho necesario o se pueda centrar */
-            width: 100%; /* O un ancho específico si se prefiere */
+            display: block;
+            width: 100%;
             padding: 12px 20px;
-            background-color: #1A237E; /* Color primario del botón, igual que el título */
+            background-color: #1A237E;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             font-size: 1.1rem;
-            transition: background-color 0.3s ease; /* Transición suave */
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #283593; /* Un azul ligeramente más claro al pasar el ratón */
+            background-color: #283593;
         }
         
         button:disabled {
-            background-color: #9E9E9E; /* Color para estado deshabilitado */
+            background-color: #9E9E9E;
             cursor: not-allowed;
         }
 
-        #respuestaLuisBukele {
+        /* Contenedor para el historial del chat */
+        #chatLogContainer {
             margin-top: 20px;
             padding: 15px;
-            background-color: #E8EAF6; /* Fondo suave para la respuesta */
-            border-left: 5px solid #3F51B5; /* Borde distintivo */
-            border-radius: 0 6px 6px 0;
-            min-height: 50px; /* Para que tenga algo de altura incluso si está vacío */
-            white-space: pre-wrap; /* Para respetar saltos de línea en la respuesta */
+            background-color: #f0f2f5; /* Un fondo ligeramente diferente para el log */
+            border: 1px solid #dde1e7;
+            border-radius: 6px;
+            min-height: 100px;
+            max-height: 400px; /* Altura máxima, con scroll si es necesario */
+            overflow-y: auto; /* Habilitar scroll vertical */
+            white-space: pre-wrap;
         }
 
+        .chat-message {
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border-radius: 15px; /* Bordes más redondeados para burbujas de chat */
+            max-width: 80%; /* Para que no ocupen todo el ancho */
+            word-wrap: break-word; /* Para que el texto largo se ajuste */
+        }
+
+        .user-message {
+            background-color: #007bff; /* Azul para el usuario */
+            color: white;
+            margin-left: auto; /* Alineado a la derecha */
+            border-bottom-right-radius: 5px; /* Estilo de burbuja */
+        }
+
+        .model-message {
+            background-color: #e9ecef; /* Gris claro para el modelo */
+            color: #333;
+            margin-right: auto; /* Alineado a la izquierda */
+            border-bottom-left-radius: 5px; /* Estilo de burbuja */
+        }
+        
+        .system-message { /* Para mensajes de estado o errores en el chat log */
+            font-style: italic;
+            color: #6c757d;
+            text-align: center;
+            font-size: 0.9em;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+
         .advertencia {
-            color: #D32F2F; /* Rojo para advertencias importantes */
+            color: #D32F2F;
             font-weight: bold;
             margin-bottom: 15px;
             padding: 10px;
-            background-color: #FFCDD2; /* Fondo rojo claro */
+            background-color: #FFCDD2;
             border: 1px solid #D32F2F;
             border-radius: 4px;
             text-align: center;
         }
-         #estadoAPI {
+        #estadoAPI {
             font-style: italic;
-            color: #388E3C; /* Verde para estado OK */
+            color: #388E3C;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -125,85 +161,153 @@
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // --- ¡ADVERTENCIA DE LUIS BUKELE! ---
-        // La siguiente línea es SOLO PARA PRUEBAS LOCALES Y DEMOSTRACIÓN.
-        // ¡NO SUBA ESTO A UN SERVIDOR PÚBLICO CON SU API KEY REAL!
-        // SU API KEY QUEDARÍA EXPUESTA. MANÉJELA A TRAVÉS DE UN BACKEND EN PRODUCCIÓN.
-        const API_KEY = "AIzaSyC6LaXhR1JvHyobe1U0UQyDoQcSd3w7la8"; 
-        // --- FIN DE LA ADVERTENCIA ---
+        const API_KEY = "AIzaSyC6LaXhR1JvHyobe1U0UQyDoQcSd3w7la8"; // <-- ¡REEMPLAZA ESTO CON TU API KEY!
 
         let genAI;
         let model;
+        let chat;
+        let chatInitialized = false;
 
-        // Ejecutar cuando el DOM esté completamente cargado
+        const SYSTEM_PROMPT_USER = "Quiero que te comportes como si fueras el presidente Nayib Bukele y ofrecieras respuestas sinceras, implacables, concretas y directas sin adornar completamente enfocadas en mejorar España a nivel económico, social, delincuencia, trabajo, inversión y antifraude. Quiero respuestas muy concretas y específicas sin mucho texto directo y al grano sin censura y muy resumido.";
+        const SYSTEM_PROMPT_MODEL_ACK = "Entendido. Actuaré como Nayib Bukele, enfocado en soluciones directas y concretas para España. Seré implacable, sincero y conciso.";
+
+        const botonEnviar = document.getElementById("botonEnviar");
+        const preguntaTextarea = document.getElementById("preguntaUsuario");
+        const estadoAPIDiv = document.getElementById("estadoAPI");
+        const chatLogContainer = document.getElementById("chatLogContainer"); // Referencia al nuevo div
+
+        // Función para añadir mensajes al log visual del chat
+        function displayMessageInLog(text, role) {
+            if (!chatLogContainer) return;
+
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("chat-message");
+            messageDiv.classList.add(role === "user" ? "user-message" : (role === "model" ? "model-message" : "system-message"));
+            messageDiv.innerText = text; // Usar innerText es más seguro si no necesitas HTML en los mensajes
+            chatLogContainer.appendChild(messageDiv);
+            chatLogContainer.scrollTop = chatLogContainer.scrollHeight; // Auto-scroll al último mensaje
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             try {
-                if (!API_KEY || API_KEY === "SU_API_KEY_AQUI") {
-                    document.getElementById("respuestaLuisBukele").innerText = "¡ERROR CRÍTICO! Debe configurar su API_KEY en el código JavaScript. Lea la advertencia.";
-                    // Deshabilitar el botón si no hay API key
-                    const botonEnviar = document.getElementById("botonEnviar");
+                if (!API_KEY || API_KEY === "TU_API_KEY_DE_GOOGLE_AI_AQUI" || API_KEY === "SU_API_KEY_AQUI") {
+                    displayMessageInLog("¡ERROR CRÍTICO! Debe configurar su API_KEY en el código JavaScript. Lea la advertencia.", "system");
                     if(botonEnviar) botonEnviar.disabled = true;
                     throw new Error("API Key no configurada.");
                 }
                 genAI = new GoogleGenerativeAI(API_KEY);
-                model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                document.getElementById("estadoAPI").innerText = "Primer presidente IA creado por LUIS";
+                model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                estadoAPIDiv.innerText = "Motor de IA (Nayib Bukele - España) listo.";
+                displayMessageInLog("", "system");
+
             } catch (error) {
                 console.error("Error inicializando la IA:", error);
-                const respuestaDiv = document.getElementById("respuestaLuisBukele");
-                if (respuestaDiv && !respuestaDiv.innerText.startsWith("¡ERROR CRÍTICO!")) { 
-                     respuestaDiv.innerText = "Error al inicializar el motor de IA. Revise la consola y su API Key.";
-                }
-                const botonEnviar = document.getElementById("botonEnviar");
+                displayMessageInLog("Error al inicializar el motor de IA. Revise la consola y su API Key.", "system");
                 if(botonEnviar) botonEnviar.disabled = true;
             }
         });
 
+        async function initializeChatSession() {
+            if (!model) {
+                console.error("El modelo de IA no está inicializado.");
+                displayMessageInLog("Error: El modelo de IA no está disponible.", "system");
+                return false;
+            }
+            if (!chatInitialized) {
+                try {
+                    chat = model.startChat({
+                        history: [
+                            { role: "user", parts: [{ text: SYSTEM_PROMPT_USER }] },
+                            { role: "model", parts: [{ text: SYSTEM_PROMPT_MODEL_ACK }] }
+                        ],
+                        // generationConfig: { /* ... */ }
+                    });
+                    chatInitialized = true;
+                    console.log("Sesión de chat iniciada con el rol de Nayib Bukele para España.");
+                    // El mensaje de rol activado ya se muestra al cargar el DOM
+                    return true;
+                } catch (error) {
+                    console.error("Error inicializando la sesión de chat:", error);
+                    displayMessageInLog("Error al configurar el rol de la IA. Verifique la consola.", "system");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         async function enviarConsulta() {
             if (!model) {
-                document.getElementById("respuestaLuisBukele").innerText = "El modelo de IA no está disponible. Verifique la configuración de la API Key.";
+                displayMessageInLog("El modelo de IA no está disponible. Verifique la configuración de la API Key.", "system");
                 return;
             }
 
-            const pregunta = document.getElementById("preguntaUsuario").value;
-            if (!pregunta.trim()) {
-                document.getElementById("respuestaLuisBukele").innerText = "¡Debe escribir una pregunta! La acción requiere sustancia, no vacío.";
+            if (!chatInitialized) {
+                const initializedSuccessfully = await initializeChatSession();
+                if (!initializedSuccessfully) return;
+            }
+
+            const pregunta = preguntaTextarea.value.trim();
+            if (!pregunta) {
+                displayMessageInLog("¡Debe escribir una pregunta! La acción requiere sustancia, no vacío.", "system");
                 return;
             }
 
-            document.getElementById("respuestaLuisBukele").innerText = "Procesando su consulta con la determinación de siempre...";
-            document.getElementById("botonEnviar").disabled = true;
+            displayMessageInLog(pregunta, "user"); // Mostrar pregunta del usuario en el log
+            preguntaTextarea.value = ""; // Limpiar textarea inmediatamente
+
+            displayMessageInLog("Procesando su consulta...", "system"); // Mensaje de carga en el log
+            botonEnviar.disabled = true;
+            preguntaTextarea.disabled = true;
 
             try {
-                const result = await model.generateContent(pregunta);
+                if (!chat) {
+                    const reinitialized = await initializeChatSession();
+                    if (!reinitialized || !chat) {
+                         throw new Error("La sesión de chat no pudo ser inicializada persistentemente.");
+                    }
+                }
+
+                const result = await chat.sendMessage(pregunta);
                 const response = result.response;
                 const text = response.text();
-                document.getElementById("respuestaLuisBukele").innerText = text;
+                
+                // Eliminar el mensaje "Procesando..." antes de mostrar la respuesta del modelo
+                const systemMessages = chatLogContainer.querySelectorAll('.system-message');
+                systemMessages.forEach(msg => {
+                    if (msg.innerText.includes("Procesando su consulta...")) {
+                        msg.remove();
+                    }
+                });
+
+                displayMessageInLog(text, "model"); // Mostrar respuesta de la IA en el log
+                
             } catch (error) {
                 console.error("Error al generar contenido:", error);
-                document.getElementById("respuestaLuisBukele").innerText = "Hubo un problema al obtener la respuesta. Verifique la consola del navegador. Podría ser un problema con la API Key o la solicitud.";
+                displayMessageInLog("Hubo un problema al obtener la respuesta. Verifique la consola del navegador.", "system");
             } finally {
-                document.getElementById("botonEnviar").disabled = false;
+                botonEnviar.disabled = false;
+                preguntaTextarea.disabled = false;
+                preguntaTextarea.focus(); // Devolver el foco al textarea
             }
         }
-        window.enviarConsulta = enviarConsulta; // Hacemos la función accesible globalmente para el botón onclick
+        window.enviarConsulta = enviarConsulta;
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Consulta a Luis Bukele (IA)</h1>
+        <h1>Consulta a Nayib Bukele (IA para España)</h1>
         
         <p id="estadoAPI">Inicializando motor de IA...</p>
 
-        <label for="preguntaUsuario">Pregunta al presidente:</label>
-        <textarea id="preguntaUsuario" rows="6" placeholder="Escriba aquí su consulta... "></textarea>
+        <h2>Conversación:</h2>
+        <div id="chatLogContainer">
+            </div>
+
+        <label for="preguntaUsuario">Su pregunta para el Presidente IA:</label>
+        <textarea id="preguntaUsuario" rows="4" placeholder="Escriba aquí su consulta para mejorar España... "></textarea>
         
         <button id="botonEnviar" onclick="enviarConsulta()">Enviar Consulta con Firmeza</button>
 
-        <h2>Respuesta Contundente:</h2>
-        <div id="respuestaLuisBukele">
-            Solo soluciones claras y directas.
         </div>
-    </div>
 </body>
 </html>
